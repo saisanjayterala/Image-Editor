@@ -14,7 +14,7 @@ body {
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    max-width: 800px;
+    max-width: 900px;
     width: 100%;
 }
 
@@ -41,10 +41,21 @@ body {
     align-items: center;
 }
 
+.canvas-container {
+    position: relative;
+    margin: 20px 0;
+}
+
 canvas {
     max-width: 100%;
-    margin: 20px 0;
     border: 1px solid #ddd;
+}
+
+.crop-box {
+    position: absolute;
+    border: 2px dashed #fff;
+    box-shadow: 0 0 0 9999em rgba(0, 0, 0, 0.5);
+    display: none;
 }
 
 .controls {
@@ -59,7 +70,7 @@ canvas {
     flex-basis: calc(33.333% - 20px);
 }
 
-input[type="range"] {
+input[type="range"], select {
     width: 100%;
 }
 
