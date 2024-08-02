@@ -5,9 +5,12 @@ let originalImageData;
 
 const brightnessSlider = document.getElementById('brightness');
 const contrastSlider = document.getElementById('contrast');
+const saturationSlider = document.getElementById('saturation');
 const rotationSlider = document.getElementById('rotation');
 const filterSelect = document.getElementById('filter');
 const cropBtn = document.getElementById('cropBtn');
+const flipHorizontalBtn = document.getElementById('flipHorizontal');
+const flipVerticalBtn = document.getElementById('flipVertical');
 const resetButton = document.getElementById('reset');
 const downloadButton = document.getElementById('download');
 const cropBox = document.getElementById('cropBox');
@@ -19,6 +22,7 @@ let cropEnd = { x: 0, y: 0 };
 document.getElementById('imageUpload').addEventListener('change', function(e) {
     const reader = new FileReader();
     reader.onload = function(event) {
+        img = new Image();
         img.onload = function() {
             canvas.width = img.width;
             canvas.height = img.height;
@@ -35,22 +39,56 @@ function applyFilters() {
     
     ctx.putImageData(originalImageData, 0, 0);
     
-    // Apply brightness and contrast
     const brightness = parseInt(brightnessSlider.value);
     const contrast = parseInt(contrastSlider.value);
+    const saturation = parseInt(saturationSlider.value);
+    const rotation = parseInt(rotationSlider.value);
+    const filter = filterSelect.value;
+    
     const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
     const data = imageData.data;
     
     for (let i = 0; i < data.length; i += 4) {
-        data[i] = applyBrightnessContrast(data[i], brightness, contrast);
-        data[i + 1] = applyBrightnessContrast(data[i + 1], brightness, contrast);
-        data[i + 2] = applyBrightnessContrast(data[i + 2], brightness, contrast);
+        let r = data[i];
+        let g = data[i + 1];
+        let b = data[i + 2];
+        
+        // Apply brightness and contrast
+        r = applyBrightnessContrast(r, brightness, contrast);
+        g = applyBrightnessContrast(g, brightness, contrast);
+        b = applyBrightnessContrast(b, brightness, contrast);
+        
+        // Apply saturation
+        const gray = 0.2989 * r + 0.5870 * g + 0.1140 * b;
+        r = Math.min(255, Math.max(0, r + saturation * (r - gray) / 100));
+        g = Math.min(255, Math.max(0, g + saturation * (g - gray) / 100));
+        b = Math.min(255, Math.max(0, b + saturation * (b - gray) / 100));
+        
+        // Apply filter
+        if (filter === 'grayscale') {
+            const avg = (r + g + b) / 3;
+            r = g = b = avg;
+        } else if (filter === 'sepia') {
+            const tr = 0.393 * r + 0.769 * g + 0.189 * b;
+            const tg = 0.349 * r + 0.686 * g + 0.168 * b;
+            const tb = 0.272 * r + 0.534 * g + 0.131 * b;
+            r = Math.min(255, tr);
+            g = Math.min(255, tg);
+            b = Math.min(255, tb);
+        } else if (filter === 'invert') {
+            r = 255 - r;
+            g = 255 - g;
+            b = 255 - b;
+        }
+        
+        data[i] = r;
+        data[i + 1] = g;
+        data[i + 2] = b;
     }
     
     ctx.putImageData(imageData, 0, 0);
     
     // Apply rotation
-    const rotation = parseInt(rotationSlider.value);
     if (rotation !== 0) {
         const tempCanvas = document.createElement('canvas');
         const tempCtx = tempCanvas.getContext('2d');
@@ -65,27 +103,6 @@ function applyFilters() {
         ctx.drawImage(tempCanvas, -canvas.width / 2, -canvas.height / 2);
         ctx.restore();
     }
-    
-    // Apply filter
-    const filter = filterSelect.value;
-    if (filter !== 'none') {
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-        const data = imageData.data;
-        for (let i = 0; i < data.length; i += 4) {
-            const r = data[i];
-            const g = data[i + 1];
-            const b = data[i + 2];
-            if (filter === 'grayscale') {
-                const gray = 0.2126 * r + 0.7152 * g + 0.0722 * b;
-                data[i] = data[i + 1] = data[i + 2] = gray;
-            } else if (filter === 'sepia') {
-                data[i] = Math.min(255, r * 0.393 + g * 0.769 + b * 0.189);
-                data[i + 1] = Math.min(255, r * 0.349 + g * 0.686 + b * 0.168);
-                data[i + 2] = Math.min(255, r * 0.272 + g * 0.534 + b * 0.131);
-            }
-        }
-        ctx.putImageData(imageData, 0, 0);
-    }
 }
 
 function applyBrightnessContrast(value, brightness, contrast) {
@@ -96,6 +113,7 @@ function applyBrightnessContrast(value, brightness, contrast) {
 
 brightnessSlider.addEventListener('input', applyFilters);
 contrastSlider.addEventListener('input', applyFilters);
+saturationSlider.addEventListener('input', applyFilters);
 rotationSlider.addEventListener('input', applyFilters);
 filterSelect.addEventListener('change', applyFilters);
 
@@ -107,7 +125,7 @@ cropBtn.addEventListener('click', function() {
     } else {
         isCropping = false;
         cropBox.style.display = 'none';
-        cropBtn.textContent = 'Crop Image';
+        cropBtn.textContent = 'Start Crop';
         
         const cropWidth = Math.abs(cropEnd.x - cropStart.x);
         const cropHeight = Math.abs(cropEnd.y - cropStart.y);
@@ -149,9 +167,26 @@ canvas.addEventListener('mousemove', function(e) {
     }
 });
 
+flipHorizontalBtn.addEventListener('click', function() {
+    ctx.save();
+    ctx.scale(-1, 1);
+    ctx.drawImage(canvas, -canvas.width, 0);
+    ctx.restore();
+    originalImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+});
+
+flipVerticalBtn.addEventListener('click', function() {
+    ctx.save();
+    ctx.scale(1, -1);
+    ctx.drawImage(canvas, 0, -canvas.height);
+    ctx.restore();
+    originalImageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+});
+
 resetButton.addEventListener('click', function() {
     brightnessSlider.value = 0;
     contrastSlider.value = 0;
+    saturationSlider.value = 0;
     rotationSlider.value = 0;
     filterSelect.value = 'none';
     if (originalImageData) {

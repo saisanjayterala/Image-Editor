@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Editor v3</title>
+    <title>Image Editor v4</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -28,6 +28,10 @@
                     <input type="range" id="contrast" min="-100" max="100" value="0">
                 </div>
                 <div class="control-group">
+                    <h3>Saturation</h3>
+                    <input type="range" id="saturation" min="-100" max="100" value="0">
+                </div>
+                <div class="control-group">
                     <h3>Rotation</h3>
                     <input type="range" id="rotation" min="0" max="360" value="0">
                 </div>
@@ -37,11 +41,17 @@
                         <option value="none">None</option>
                         <option value="grayscale">Grayscale</option>
                         <option value="sepia">Sepia</option>
+                        <option value="invert">Invert</option>
                     </select>
                 </div>
                 <div class="control-group">
                     <h3>Crop</h3>
-                    <button id="cropBtn">Crop Image</button>
+                    <button id="cropBtn">Start Crop</button>
+                </div>
+                <div class="control-group">
+                    <h3>Flip</h3>
+                    <button id="flipHorizontal">Flip Horizontal</button>
+                    <button id="flipVertical">Flip Vertical</button>
                 </div>
                 <button id="reset">Reset</button>
                 <button id="download">Download Image</button>
