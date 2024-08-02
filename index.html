@@ -3,60 +3,72 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Editor v4</title>
+    <title>PhotoMadness Pro v5</title>
     <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/your-fontawesome-kit.js" crossorigin="anonymous"></script>
 </head>
 <body>
     <div class="container">
-        <h1>Professional Image Editor</h1>
-        <div class="upload-container">
-            <label for="imageUpload" class="upload-label">Choose an image</label>
-            <input type="file" id="imageUpload" accept="image/*">
-        </div>
-        <div class="editor-container">
+        <header>
+            <h1 class="glitch" data-text="PhotoMadness Pro">PhotoMadness Pro</h1>
+            <div class="upload-container">
+                <label for="imageUpload" class="upload-label">
+                    <i class="fas fa-cloud-upload-alt"></i> Choose Image
+                </label>
+                <input type="file" id="imageUpload" accept="image/*">
+            </div>
+        </header>
+        <main class="editor-container">
             <div class="canvas-container">
                 <canvas id="canvas"></canvas>
                 <div id="cropBox" class="crop-box"></div>
             </div>
-            <div class="controls">
-                <div class="control-group">
-                    <h3>Brightness</h3>
-                    <input type="range" id="brightness" min="-100" max="100" value="0">
+            <div class="controls-container">
+                <div class="control-panel adjustments">
+                    <h2>Adjustments</h2>
+                    <div class="slider-group">
+                        <label for="brightness"><i class="fas fa-sun"></i> Brightness</label>
+                        <input type="range" id="brightness" min="-100" max="100" value="0">
+                    </div>
+                    <div class="slider-group">
+                        <label for="contrast"><i class="fas fa-adjust"></i> Contrast</label>
+                        <input type="range" id="contrast" min="-100" max="100" value="0">
+                    </div>
+                    <div class="slider-group">
+                        <label for="saturation"><i class="fas fa-palette"></i> Saturation</label>
+                        <input type="range" id="saturation" min="-100" max="100" value="0">
+                    </div>
+                    <div class="slider-group">
+                        <label for="rotation"><i class="fas fa-sync-alt"></i> Rotation</label>
+                        <input type="range" id="rotation" min="0" max="360" value="0">
+                    </div>
                 </div>
-                <div class="control-group">
-                    <h3>Contrast</h3>
-                    <input type="range" id="contrast" min="-100" max="100" value="0">
+                <div class="control-panel filters">
+                    <h2>Filters & Effects</h2>
+                    <div class="filter-buttons">
+                        <button id="filter-none" class="filter-btn active"><i class="fas fa-times-circle"></i> None</button>
+                        <button id="filter-grayscale" class="filter-btn"><i class="fas fa-gray"></i> Grayscale</button>
+                        <button id="filter-sepia" class="filter-btn"><i class="fas fa-sepia"></i> Sepia</button>
+                        <button id="filter-invert" class="filter-btn"><i class="fas fa-invert"></i> Invert</button>
+                        <button id="filter-blur" class="filter-btn"><i class="fas fa-blur"></i> Blur</button>
+                        <button id="filter-emboss" class="filter-btn"><i class="fas fa-mountain"></i> Emboss</button>
+                    </div>
                 </div>
-                <div class="control-group">
-                    <h3>Saturation</h3>
-                    <input type="range" id="saturation" min="-100" max="100" value="0">
+                <div class="control-panel actions">
+                    <h2>Actions</h2>
+                    <div class="action-buttons">
+                        <button id="cropBtn" class="action-btn"><i class="fas fa-crop-alt"></i> Crop</button>
+                        <button id="flipHorizontal" class="action-btn"><i class="fas fa-arrows-alt-h"></i> Flip H</button>
+                        <button id="flipVertical" class="action-btn"><i class="fas fa-arrows-alt-v"></i> Flip V</button>
+                    </div>
                 </div>
-                <div class="control-group">
-                    <h3>Rotation</h3>
-                    <input type="range" id="rotation" min="0" max="360" value="0">
-                </div>
-                <div class="control-group">
-                    <h3>Filters</h3>
-                    <select id="filter">
-                        <option value="none">None</option>
-                        <option value="grayscale">Grayscale</option>
-                        <option value="sepia">Sepia</option>
-                        <option value="invert">Invert</option>
-                    </select>
-                </div>
-                <div class="control-group">
-                    <h3>Crop</h3>
-                    <button id="cropBtn">Start Crop</button>
-                </div>
-                <div class="control-group">
-                    <h3>Flip</h3>
-                    <button id="flipHorizontal">Flip Horizontal</button>
-                    <button id="flipVertical">Flip Vertical</button>
-                </div>
-                <button id="reset">Reset</button>
-                <button id="download">Download Image</button>
             </div>
-        </div>
+        </main>
+        <footer>
+            <button id="reset" class="footer-btn"><i class="fas fa-undo"></i> Reset</button>
+            <button id="download" class="footer-btn"><i class="fas fa-download"></i> Download</button>
+        </footer>
     </div>
     <script src="script.js"></script>
 </body>
